@@ -21,7 +21,31 @@ public class CustomerController {
     public String home()
     {
         log.info("Entering home page...");
-        return "<h1>Welcome to the Customer Management System!</h1>";
+        StringBuilder allHTML = new StringBuilder();
+
+        allHTML.append("<style>" +
+                ".homepanel {" +
+                "display: flex;" +
+                "flex-direction: column;" +
+                "margin: 20;" +
+                "align-items: center;" +
+                "justify-content: center;" +
+                "}" +
+                ".homepanel > h1 {" +
+                "margin: 0;" +
+                "margin-bottom: 10;" +
+                "font-size: 50;" +
+                "}" +
+                ".homepanel > a {" +
+                "font-size: 30;" +
+                "}" +
+                "</style>");
+
+        allHTML.append("<div class=\"homepanel\">");
+        allHTML.append("<h1>Welcome to the Customer Management System!</h1>");
+        allHTML.append("<a href=\"/customers\">View all current customers.</a>");
+        allHTML.append("</div>");
+        return allHTML.toString();
     }
 
 
@@ -43,42 +67,43 @@ public class CustomerController {
         // CSS Styling
         allHTML.append("<style>" +
                 ".customerpanel {" +
-                "display: flex;" +
-                "flex-direction: row;" +
-                "flex-wrap: wrap;" +
-                "align-items: stretch;" +
-                "justify-content: space-evenly;" +
-                "border-top: 1px solid black;" +
+                    "display: flex;" +
+                    "flex-direction: row;" +
+                    "flex-wrap: wrap;" +
+                    "align-items: stretch;" +
+                    "justify-content: space-evenly;" +
+                    "border-top: 1px solid black;" +
                 "}" +
                 ".customercomponent {" +
-                "width: 30%;" +
-                "height: 100%;" +
-                "border: 1px solid black;" +
-                "border-radius: 10% / 50%;" +
-                "margin-top: 10;" +
-                "display: flex;" +
-                "flex-direction: column;" +
-                "align-items: center;" +
-                "justify-content: center;" +
+                    "width: 30%;" +
+                    "height: 100%;" +
+                    "border: 1px solid black;" +
+                    "border-radius: 10% / 50%;" +
+                    "margin-top: 10;" +
+                    "display: flex;" +
+                    "flex-direction: column;" +
+                    "align-items: center;" +
+                    "justify-content: center;" +
                 "}" +
                 ".customercomponent > p {" +
-                "margin: 2;" +
+                    "margin: 2;" +
                 "}" +
                 ".customercomponent > a {" +
-                "margin: 5;" +
+                    "margin: 5;" +
                 "}" +
                 ".header {" +
-                "display: flex;" +
-                "flex-direction: column;" +
-                "align-items: center;" +
-                "justify-content: center;" +
-                "padding-bottom: 20;" +
+                    "display: flex;" +
+                    "flex-direction: column;" +
+                    "align-items: center;" +
+                    "justify-content: center;" +
+                    "padding-bottom: 20;" +
                 "}" +
                 ".header > h1 {" +
-                "margin-bottom: 5;" +
+                    "margin-bottom: 5;" +
+                    "font-size: 60;" +
                 "}" +
                 ".header > a {" +
-                "margin-bottom: 3;" +
+                    "margin-bottom: 3;" +
                 "}" +
                 "</style>");
 
@@ -92,9 +117,10 @@ public class CustomerController {
         }
 
         // Create sorting links
-        allHTML.append("<a href=\"/customers/name\">Sort by Name</a>");
-        allHTML.append("<a href=\"/customers/email\">Sort by Email</a>");
-        allHTML.append("<a href=\"/customers/phoneNumbers\">Sort by Phone Numbers</a>");
+        allHTML.append("<a href=\"/customers/name\"><button>Sort by Name</button></a>");
+        allHTML.append("<a href=\"/customers/email\"><button>Sort by Email</button></a>");
+        allHTML.append("<a href=\"/customers/phoneNumbers\"><button>Sort by Phone Numbers</button></a>");
+        allHTML.append("<a href=\"/customers\"><button>Default ID Sort</button></a>");
 
         // Close header container
         allHTML.append("</div>");
@@ -107,6 +133,64 @@ public class CustomerController {
             allHTML.append("</div>");
         }
         allHTML.append("</div>");
+        return allHTML.toString();
+    }
+
+    private String customerPageBuilder(Customer c)
+    {
+        StringBuilder allHTML = new StringBuilder();
+
+        allHTML.append("<style>" +
+                ".pagepanel {" +
+                "display: flex;" +
+                "flex-direction: row;" +
+                "height: 100%;" +
+                "align-items: center;" +
+                "justify-content: center;" +
+                "}" +
+                ".customercomp {" +
+                "display: flex;" +
+                "flex-direction: column;" +
+                "border: 1px solid black;" +
+                "border-radius: 20px;" +
+                "padding: 20;" +
+                "align-items: center;" +
+                "justify-content: center;" +
+                "}" +
+                ".customercomp > p {" +
+                "font-size: 30px;" +
+                "margin: 0;" +
+                "margin-bottom: 10;" +
+                "}" +
+                ".customercomp > h1 {" +
+                "font-size: 60px;" +
+                "}" +
+                "</style>");
+
+        allHTML.append("<div class=\"pagepanel\">");
+        allHTML.append("<div class=\"customercomp\">");
+
+        if(c == null) {
+            log.info("Customer not found, creating null page...");
+            allHTML.append("<h1>Customer Not Found!</h1>");
+            allHTML.append("<a href=\"/customers\"><button>Go Back</button></a>");
+            allHTML.append("</div>");
+            allHTML.append("</div>");
+        }
+        else {
+            log.info("Customer found, creating customer page...");
+            allHTML.append("<a href=\"/customers\"><button>Go Back</button></a>");
+            allHTML.append(String.format("<h1>Customer (ID: %d):</h1>", c.getCustomerId()));
+            allHTML.append(String.format("<p><b>Name:</b> %s</p>", c.getName()));
+            allHTML.append(String.format("<p><b>Email:</b> %s</p>", c.getEmail()));
+            allHTML.append(String.format("<p><b>Phone Number:</b> %s</p>", c.getPhoneNumber()));
+
+        }
+
+        allHTML.append("</div>");
+        allHTML.append("</div>");
+
+
         return allHTML.toString();
     }
 
@@ -145,22 +229,9 @@ public class CustomerController {
     @GetMapping("/customers/{customerID}")
     public String getSingleCustomer(@PathVariable Long customerID)
     {
-
         log.info("Entering individual customer page...");
-        StringBuilder allHTML = new StringBuilder();
-        Customer cust = cs.getCustomerById(customerID);
-        if(cust == null) {
-            log.info("Customer not found, creating null page...");
-            allHTML.append("<h1>Customer Not Found!</h1>");
-        }
-        else {
-            log.info("Customer found, creating customer page...");
-            allHTML.append(String.format("<h1>Customer (ID: %d):</h1>", cust.getCustomerId()));
-            allHTML.append(String.format("<p>Name: %s</p>", cust.getName()));
-            allHTML.append(String.format("<p>Email: %s</p>", cust.getEmail()));
-            allHTML.append(String.format("<p>Phone Number: %s</p>", cust.getPhoneNumber()));
-        }
-        return allHTML.toString();
+        Customer customer = cs.getCustomerById(customerID);
+        return customerPageBuilder(customer);
 
     }
 
