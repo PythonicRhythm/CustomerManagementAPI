@@ -53,17 +53,56 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerByName(String name) {
-        return null;
+        log.info("Attempting to gather specific Customer by name...");
+        List<Customer> customers = getCustomerDAO().findCustomerByName(name);
+        if(customers.isEmpty()) {
+            log.debug("Found no customers by that name...");
+            return null;
+        }
+        else if(customers.size() > 1) {
+            log.debug("The amount of customers by that name is greater than 1. Returning the first one.");
+            return customers.get(0);
+        }
+        else {
+            log.debug("Customer was found with that name.");
+            return customers.get(0);
+        }
     }
 
     @Override
     public Customer getCustomerByEmail(String email) {
-        return null;
+        log.info("Attempting to gather specific Customer by email...");
+        List<Customer> customers = getCustomerDAO().findCustomerByEmail(email);
+        if(customers.isEmpty()) {
+            log.debug("Found no customers by that email...");
+            return null;
+        }
+        else if(customers.size() > 1) {
+            log.debug("The amount of customers by that email is greater than 1. Returning the first one.");
+            return customers.get(0);
+        }
+        else {
+            log.debug("Customer was found with that email.");
+            return customers.get(0);
+        }
     }
 
     @Override
     public Customer getCustomerByPhoneNumber(String phoneNumber) {
-        return null;
+        log.info("Attempting to gather specific Customer by phone number...");
+        List<Customer> customers = getCustomerDAO().findCustomerByPhoneNumber(phoneNumber);
+        if(customers.isEmpty()) {
+            log.debug("Found no customers by that phone number...");
+            return null;
+        }
+        else if(customers.size() > 1) {
+            log.debug("The amount of customers by that phone number is greater than 1. Returning the first one.");
+            return customers.get(0);
+        }
+        else {
+            log.debug("Customer was found with that phone number.");
+            return customers.get(0);
+        }
     }
 
     @Override

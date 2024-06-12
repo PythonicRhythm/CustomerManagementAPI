@@ -73,17 +73,37 @@ public class CustomerController {
                     "align-items: stretch;" +
                     "justify-content: space-evenly;" +
                     "border-top: 1px solid black;" +
+                    "border-bottom: 1px solid black;" +
+                    "padding: 15;" +
                 "}" +
                 ".customercomponent {" +
                     "width: 30%;" +
                     "height: 100%;" +
                     "border: 1px solid black;" +
                     "border-radius: 10% / 50%;" +
-                    "margin-top: 10;" +
+                    "margin-top: 15;" +
                     "display: flex;" +
                     "flex-direction: column;" +
                     "align-items: center;" +
                     "justify-content: center;" +
+                "}" +
+                ".searchpanel {" +
+                "display: flex;" +
+                "flex-direction: column;" +
+                "align-items: center;" +
+                "justify-content: center;" +
+                "padding: 15;" +
+                "padding-left: 50;" +
+                "padding-right: 50;" +
+                "}" +
+                ".inputrow {" +
+                "display: flex;" +
+                "flex-direction: row;" +
+                "width: 100%;" +
+                "align-items: center;" +
+                "justify-content: center;" +
+                "padding: 10;" +
+                "gap: 10px;" +
                 "}" +
                 ".customercomponent > p {" +
                     "margin: 2;" +
@@ -106,7 +126,17 @@ public class CustomerController {
                     "margin-bottom: 3;" +
                 "}" +
                 "</style>");
-
+        allHTML.append("<script>" +
+                "function namesearchredirec() {" +
+                "window.location.href = \"http://localhost:8080/customers/findbyname/\"+document.querySelectorAll('#name')[0].value;" +
+                "}" +
+                "function emailsearchredirec() {" +
+                "window.location.href = \"http://localhost:8080/customers/findbyemail/\"+document.querySelectorAll('#email')[0].value;" +
+                "}" +
+                "function phonenumbersearchredirec() {" +
+                "window.location.href = \"http://localhost:8080/customers/findbyphonenumber/\"+document.querySelectorAll('#phonenumber')[0].value;" +
+                "}" +
+                "</script>");
         allHTML.append("<div class=\"header\">");
         allHTML.append("<h1>ALL CUSTOMERS</h1>");
 
@@ -133,6 +163,29 @@ public class CustomerController {
             allHTML.append("</div>");
         }
         allHTML.append("</div>");
+
+        allHTML.append("<div class=\"searchpanel\">");
+
+        allHTML.append("<div class=\"inputrow\">");
+        allHTML.append("<label for=\"name\">Name Search: </label>");
+        allHTML.append("<input type=\"text\" id=\"name\" name=\"name\">");
+        allHTML.append("<button onclick=\"namesearchredirec()\">Search</button>");
+        allHTML.append("</div>");
+
+        allHTML.append("<div class=\"inputrow\">");
+        allHTML.append("<label for=\"email\">Email Search: </label>");
+        allHTML.append("<input type=\"text\" id=\"email\" name=\"email\">");
+        allHTML.append("<button onclick=\"emailsearchredirec()\">Search</button>");
+        allHTML.append("</div>");
+
+        allHTML.append("<div class=\"inputrow\">");
+        allHTML.append("<label for=\"phonenumber\">Phone Number Search: </label>");
+        allHTML.append("<input type=\"text\" id=\"phonenumber\" name=\"phonenumber\">");
+        allHTML.append("<button onclick=\"phonenumbersearchredirec()\">Search</button>");
+        allHTML.append("</div>");
+
+        allHTML.append("</div>");
+
         return allHTML.toString();
     }
 
@@ -233,6 +286,45 @@ public class CustomerController {
         Customer customer = cs.getCustomerById(customerID);
         return customerPageBuilder(customer);
 
+    }
+
+    @GetMapping("/customers/findbyname/{name}")
+    public String getCustomerByName(@PathVariable String name)
+    {
+        log.info("Entering name search page...");
+        Customer c = cs.getCustomerByName(name);
+        if(c == null) {
+            return customerPageBuilder(c);
+        }
+        else {
+            return getSingleCustomer(c.getCustomerId());
+        }
+    }
+
+    @GetMapping("/customers/findbyemail/{email}")
+    public String getCustomerByEmail(@PathVariable String email)
+    {
+        log.info("Entering email search page...");
+        Customer c = cs.getCustomerByEmail(email);
+        if(c == null) {
+            return customerPageBuilder(c);
+        }
+        else {
+            return getSingleCustomer(c.getCustomerId());
+        }
+    }
+
+    @GetMapping("/customers/findbyphonenumber/{phonenumber}")
+    public String getCustomerByPhoneNumber(@PathVariable String phonenumber)
+    {
+        log.info("Entering phone number search page...");
+        Customer c = cs.getCustomerByPhoneNumber(phonenumber);
+        if(c == null) {
+            return customerPageBuilder(c);
+        }
+        else {
+            return getSingleCustomer(c.getCustomerId());
+        }
     }
 
     @PostMapping("/customers")
