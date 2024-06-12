@@ -26,7 +26,7 @@ public interface CustomerDAO extends JpaRepository<Customer, Long> {
     @Query(value = "SELECT * from customer ORDER BY email", nativeQuery = true)
     List<Customer> findCustomersByEmailSort();
 
-    @Query(value = "SELECT * from customer ORDER BY phoneNumber", nativeQuery = true)
+    @Query(value = "SELECT * from customer ORDER BY phone_number", nativeQuery = true)
     List<Customer> findCustomersByPhoneNumberSort();
 
 }

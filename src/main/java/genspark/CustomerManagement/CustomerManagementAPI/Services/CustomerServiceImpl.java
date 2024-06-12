@@ -26,7 +26,12 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> getAllCustomers() {
         log.info("Attempting to acquire all Customers...");
         List<Customer> customers = CustomerDAO.findAll();
-        log.info("Acquired all customers!");
+
+        if(customers.isEmpty())
+            log.debug("No customers were found.");
+        else
+            log.info("Acquired all customers!");
+
         return customers;
     }
 
@@ -34,18 +39,16 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getCustomerById(long customerid) {
         log.info("Attempting to gather specific Customer by ID...");
         Optional<Customer> u = getCustomerDAO().findById(customerid);
-        Customer Customer = null;
+        Customer customer = null;
         if(u.isPresent()) {
             log.debug("Customer was found by id!");
-            Customer = u.get();
+            customer = u.get();
         }
         else {
             log.debug("Customer was not found by given id!");
-            throw new RuntimeException("Customer Not Found: "+customerid);
         }
 
-        log.info("Returning the found customer!");
-        return Customer;
+        return customer;
     }
 
     @Override
